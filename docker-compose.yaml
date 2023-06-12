@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: telegrambot
+      POSTGRES_PASSWORD: telegrambot
+      POSTGRES_DB: telegrambot
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres-db:/data/postgres
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+    networks:
+      - scheduler-bot-network
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8079:8080
+    networks:
+      - scheduler-bot-network
+
+  scheduler:
+    build:
+      dockerfile: scheduler/Dockerfile
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - scheduler-bot-network
+
+  polling-bot:
+    build:
+      dockerfile: polling-bot/Dockerfile
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - scheduler-bot-network
+
+volumes:
+  postgres-db:
+    driver: local
+
+networks:
+  scheduler-bot-network:
+    driver: bridge
