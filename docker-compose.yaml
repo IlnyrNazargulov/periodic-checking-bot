@@ -30,8 +30,9 @@ services:
     build:
       dockerfile: scheduler/Dockerfile
     restart: always
-    env_file:
-      - .env
+    environment:
+      BOT_TOKEN: ${INPUT_BOT_TOKEN}
+      SERVICE_URL: ${INPUT_SERVICE_URL}
     depends_on:
       - db
     networks:
@@ -41,8 +42,8 @@ services:
     build:
       dockerfile: polling-bot/Dockerfile
     restart: always
-    env_file:
-      - .env
+    environment:
+      BOT_TOKEN: ${INPUT_BOT_TOKEN}
     depends_on:
       - db
     networks:

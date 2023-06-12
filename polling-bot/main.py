@@ -1,23 +1,15 @@
 import asyncio
-import logging
+import logging.config
+import os
 
 import psycopg2
 from psycopg2 import errors
 from psycopg2.errorcodes import UNIQUE_VIOLATION
 from telebot.async_telebot import AsyncTeleBot
 
-from config import BOT_TOKEN
-
-bot = AsyncTeleBot(BOT_TOKEN)
-
-root = logging.getLogger()
-root.setLevel(logging.INFO)
-
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-
 logger = logging.getLogger(__name__)
+
+bot = AsyncTeleBot(os.getenv('BOT_TOKEN'))
 
 
 def connect_to_db():
